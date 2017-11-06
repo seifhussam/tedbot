@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"os"
 	"strings"
 
 	"github.com/ramin0/chatbot"
@@ -20,12 +19,12 @@ func handleName(session chatbot.Session, message string) (string, error) {
 
 // handle RegularMessages
 func handleChat(session chatbot.Session, message string) string {
-	Check(message)
-	return Respond()
+	R := "" + Check(message) + "\n" + Respond()
+	return R
 
 }
 
-func Check(M string) {
+func Check(M string) string {
 	M = strings.ToLower(M)
 	M = strings.Trim(M, " ")
 	//M = M[0 : len(M)-2]
@@ -47,13 +46,15 @@ func Check(M string) {
 				break
 			case 2:
 				F := FindTopic(M)
-				if F {
-					Error = false
-					Phase = 4
-				} else {
-					Error = true
-					Phase = 4
-				}
+				Phase = 4
+				return F
+				// if F {
+				// 	Error = false
+				// 	Phase = 4
+				// } else {
+				// 	Error = true
+				// 	Phase = 4
+				// }
 				break
 			case 3:
 				F := FindSpeaker(M)
@@ -71,7 +72,7 @@ func Check(M string) {
 				}
 				if a == 1 {
 					fmt.Println("BYE 🙂")
-					os.Exit(0)
+					//os.Exit(0)
 				}
 				break
 			case 5:
@@ -80,7 +81,7 @@ func Check(M string) {
 				}
 				if a == 1 {
 					fmt.Println("BYE 🙂")
-					os.Exit(0)
+					//os.Exit(0)
 				}
 				break
 			}
@@ -88,8 +89,14 @@ func Check(M string) {
 		}
 	}
 }
-func FindTopic(min string) bool {
-	return true
+func FindTopic(min string) string {
+
+	arr := fetchtopTalks(min)
+	res := ""
+	for _, e := range arr {
+		res = res + e.speaker + " : " + e.talk + ","
+	}
+	return res[:(len(res) - 1)]
 }
 
 func FindSpeaker(min string) bool {
