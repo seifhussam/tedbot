@@ -88,6 +88,7 @@ func Check(M string) string {
 			break
 		}
 	}
+	return "here"
 }
 func FindTopic(min string) string {
 
