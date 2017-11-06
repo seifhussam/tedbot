@@ -1,15 +1,11 @@
 package main
 
 import (
-	"flag"
 	"fmt"
-	"log"
-	"net/http"
+	"os"
 	"strings"
 
 	"github.com/ramin0/chatbot"
-	"google.golang.org/api/googleapi/transport"
-	youtube "google.golang.org/api/youtube/v3"
 )
 
 // handle Name
@@ -22,54 +18,123 @@ func handleName(session chatbot.Session, message string) (string, error) {
 	return fmt.Sprintf(WelcomeString + " " + message + ", " + HelpString), nil
 }
 
-// handle Video
+// handle RegularMessages
+func handleChat(session chatbot.Session, message string) string {
+	Check(message)
+	return Respond()
 
-func fetchVideoLink(talk string) string {
-	var (
-		query      = flag.String("query", talk, "Search term")
-		maxResults = flag.Int64("max-results", 1, "Max YouTube results")
-	)
+}
 
-	const developerKey = "AIzaSyAnHiHotrP8zetr9MYdJwNxAcaXBdOYrL4"
-	flag.Parse()
+func Check(M string) {
+	M = strings.ToLower(M)
+	M = strings.Trim(M, " ")
+	M = M[0 : len(M)-2]
 
-	client := &http.Client{
-		Transport: &transport.APIKey{Key: developerKey},
-	}
-
-	service, err := youtube.New(client)
-	if err != nil {
-		log.Fatalf("Error creating new YouTube client: %v", err)
-	}
-
-	// Make the API call to YouTube.
-	call := service.Search.List("id,snippet").
-		Q(*query).
-		MaxResults(*maxResults)
-	response, err := call.Do()
-	if err != nil {
-		log.Fatalf("Error making search API call: %v", err)
-	}
-
-	// Group video, channel, and playlist results in separate lists.
-	videos := make(map[string]string)
-	channels := make(map[string]string)
-	playlists := make(map[string]string)
-
-	// Iterate through each item and add it to the correct list.
-	for _, item := range response.Items {
-		switch item.Id.Kind {
-		case "youtube#video":
-			videos[item.Id.VideoId] = item.Snippet.Title
-		case "youtube#channel":
-			channels[item.Id.ChannelId] = item.Snippet.Title
-		case "youtube#playlist":
-			playlists[item.Id.PlaylistId] = item.Snippet.Title
+	for a, m := range Incoming[Phase] {
+		Error = !strings.EqualFold(m, M)
+		if Phase == 2 || Phase == 3 {
+			Error = false
+		}
+		if !Error {
+			switch Phase {
+			case 1:
+				if a == 0 {
+					Phase = 2
+				}
+				if a == 1 {
+					Phase = 3
+				}
+				break
+			case 2:
+				F := FindTopic(M)
+				if F {
+					Error = false
+					Phase = 4
+				} else {
+					Error = true
+					Phase = 4
+				}
+				break
+			case 3:
+				F := FindSpeaker(M)
+				if F {
+					Error = false
+					Phase = 5
+				} else {
+					Error = true
+					Phase = 5
+				}
+				break
+			case 4:
+				if a == 0 {
+					Phase = 2
+				}
+				if a == 1 {
+					fmt.Println("BYE 🙂")
+					os.Exit(0)
+				}
+				break
+			case 5:
+				if a == 0 {
+					Phase = 3
+				}
+				if a == 1 {
+					fmt.Println("BYE 🙂")
+					os.Exit(0)
+				}
+				break
+			}
+			break
 		}
 	}
-	thisid := ""
-	for id := range videos {
-		thisid = id
-	}
-	return Youtubelink + thisid
 }
+func FindTopic(min string) bool {
+	return true
+}
+
+func FindSpeaker(min string) bool {
+	return true
+}
+
+func Respond() string {
+	if Error {
+		return (Outgoing[Phase][1])
+	}
+	return (Outgoing[Phase][0])
+
+}
+func Init() {
+	Phase = 1
+	Error = false
+
+	Incoming[1][0] = "topic"
+	Incoming[1][1] = "speaker"
+
+	Incoming[4][0] = "yes"
+	Incoming[4][1] = "no"
+
+	Incoming[5][0] = "yes"
+	Incoming[5][1] = "no"
+	//---------------------------------------------------------------------------------------------------
+	Outgoing[1][0] = "Hi stranger, I am TEDbot. Would you like to search for a topic or a sepaker?"
+	Outgoing[1][1] = "I don't understand, please choose topic or speaker?"
+
+	Outgoing[2][0] = "What topic should I get for you?"
+	Outgoing[2][1] = "I couldn't find this topic, please tell me another one"
+
+	Outgoing[3][0] = "Please tell me the name of the speaker?"
+	Outgoing[3][1] = "I couldn't find a speaker with that name, please tell me another name"
+
+	Outgoing[4][0] = "Here are some talks for this topic"
+	Outgoing[4][1] = "Would you like to chosoe another topcic?"
+
+	Outgoing[5][0] = "Here are some talks for this speaker"
+	Outgoing[5][1] = "Would you like to choose another speaker?"
+}
+
+var Phase = 1
+var s = ""
+var Error = false
+
+var Incoming = [6][2]string{}
+var Outgoing = [6][2]string{}

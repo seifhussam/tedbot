@@ -14,7 +14,8 @@ func chatbotProcess(session chatbot.Session, message string) (string, error) {
 	if session["name"] == nil {
 		return handleName(session, message)
 	}
-	return fmt.Sprintf("I got your name"), nil
+
+	return fmt.Sprintf(handleChat(session, message)), nil
 
 }
 
@@ -46,6 +47,8 @@ func main() {
 
 	//fill topics
 	fetchTopics()
+
+	Init()
 
 	port := os.Getenv("PORT")
 	// Default to 3000 if no PORT environment variable was defined
