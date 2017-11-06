@@ -15,7 +15,7 @@ func handleName(session chatbot.Session, message string) (string, error) {
 	}
 	session["name"] = message
 	fmt.Println(session)
-	return fmt.Sprintf(WelcomeString + " " + message + ", " + HelpString), nil
+	return fmt.Sprintf("Would you like to search for a topic or a sepaker?"), nil
 }
 
 // handle RegularMessages
@@ -28,7 +28,7 @@ func handleChat(session chatbot.Session, message string) string {
 func Check(M string) {
 	M = strings.ToLower(M)
 	M = strings.Trim(M, " ")
-	M = M[0 : len(M)-2]
+	//M = M[0 : len(M)-2]
 
 	for a, m := range Incoming[Phase] {
 		Error = !strings.EqualFold(m, M)
