@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"log"
+	"regexp"
 	"strings"
 
 	"github.com/ramin0/chatbot"
@@ -14,12 +16,12 @@ func handleName(session chatbot.Session, message string) (string, error) {
 	}
 	session["name"] = message
 	fmt.Println(session)
-	return fmt.Sprintf("Would you like to search for a topic or a sepaker?"), nil
+	return fmt.Sprintf(Outgoing[1][0]), nil
 }
 
 // handle RegularMessages
 func handleChat(session chatbot.Session, message string) string {
-	R := "" + Check(message) + "\n" + Respond()
+	R := "" + Check(message) + Respond()
 	return R
 
 }
@@ -27,11 +29,16 @@ func handleChat(session chatbot.Session, message string) string {
 func Check(M string) string {
 	M = strings.ToLower(M)
 	M = strings.Trim(M, " ")
+
+	if strings.EqualFold(M, "help") {
+		return (Outgoing[Phase][2])
+	}
+
 	//M = M[0 : len(M)-2]
 
 	for a, m := range Incoming[Phase] {
 		Error = !strings.EqualFold(m, M)
-		if Phase == 2 || Phase == 3 {
+		if Phase == 2 || Phase == 3 || Phase == 7 {
 			Error = false
 		}
 		if !Error {
@@ -43,36 +50,52 @@ func Check(M string) string {
 				if a == 1 {
 					Phase = 3
 				}
+				if a == 2 {
+					Phase = 1
+					return fetchTedinfo()
+				}
+				if a == 3 {
+					Phase = 7
+				}
 				break
 			case 2:
 				F := FindTopic(M)
-				Phase = 4
+				reg, err := regexp.Compile("[^a-zA-Z0-9]+")
+				if err != nil {
+					log.Fatal(err)
+				}
+				test := reg.ReplaceAllString(F, "")
+				if test == "" {
+					Error = true
+					Phase = 2
+					return ""
+				}
+				Phase = 1
+				Error = false
 				return F
-				// if F {
-				// 	Error = false
-				// 	Phase = 4
-				// } else {
-				// 	Error = true
-				// 	Phase = 4
-				// }
 				break
 			case 3:
-				F := FindSpeaker(M)
-				if F {
-					Error = false
-					Phase = 5
-				} else {
-					Error = true
-					Phase = 5
+				F := searchSpeakername(M)
+				reg, err := regexp.Compile("[^a-zA-Z0-9]+")
+				if err != nil {
+					log.Fatal(err)
 				}
+				test := reg.ReplaceAllString(F, "")
+				if test == "" {
+					Error = true
+					Phase = 3
+					return ""
+				}
+				Phase = 1
+				Error = false
+				return F
 				break
 			case 4:
 				if a == 0 {
 					Phase = 2
 				}
 				if a == 1 {
-					fmt.Println("BYE 🙂")
-					//os.Exit(0)
+					Phase = 1
 				}
 				break
 			case 5:
@@ -80,28 +103,42 @@ func Check(M string) string {
 					Phase = 3
 				}
 				if a == 1 {
-					fmt.Println("BYE 🙂")
-					//os.Exit(0)
+					Phase = 1
+				}
+				break
+			case 6:
+				Phase = 1
+				Error = false
+				break
+			case 7:
+				F := FindTalk(M)
+				reg, err := regexp.Compile("[^a-zA-Z0-9]+")
+				if err != nil {
+					log.Fatal(err)
+				}
+				test := reg.ReplaceAllString(F, "")
+				if test == "" {
+					Error = true
+					Phase = 7
+					return ""
+				}
+				Error = false
+				Phase = 1
+				return F
+				break
+			case 8:
+				if a == 0 {
+					Phase = 7
+				}
+				if a == 1 {
+					Phase = 1
 				}
 				break
 			}
 			break
 		}
 	}
-	return "here"
-}
-func FindTopic(min string) string {
-
-	arr := fetchtopTalks(min)
-	res := ""
-	for _, e := range arr {
-		res = res + e.speaker + " : " + e.talk + ","
-	}
-	return res[:(len(res) - 1)]
-}
-
-func FindSpeaker(min string) bool {
-	return true
+	return " "
 }
 
 func Respond() string {
@@ -111,38 +148,65 @@ func Respond() string {
 	return (Outgoing[Phase][0])
 
 }
+
 func Init() {
 	Phase = 1
 	Error = false
 
 	Incoming[1][0] = "topic"
 	Incoming[1][1] = "speaker"
+	Incoming[1][2] = "info"
+	Incoming[1][3] = "talk"
 
 	Incoming[4][0] = "yes"
 	Incoming[4][1] = "no"
 
 	Incoming[5][0] = "yes"
 	Incoming[5][1] = "no"
+
+	Incoming[8][0] = "yes"
+	Incoming[8][1] = "no"
+
 	//---------------------------------------------------------------------------------------------------
-	Outgoing[1][0] = "Hi stranger, I am TEDbot. Would you like to search for a topic or a sepaker?"
-	Outgoing[1][1] = "I don't understand, please choose topic or speaker?"
+	Outgoing[1][0] = "Would you like to search for a Topic, Speaker, Info or a Talk?"
+	Outgoing[1][1] = "I don't understand, please choose Topic, Speaker, Info or a Talk?"
+	Outgoing[1][2] = "Please type Topic, Speaker, Info or a Talk"
 
 	Outgoing[2][0] = "What topic should I get for you?"
 	Outgoing[2][1] = "I couldn't find this topic, please tell me another one"
+	Outgoing[2][2] = "Please type the name of the Topic you wish view"
 
 	Outgoing[3][0] = "Please tell me the name of the speaker?"
 	Outgoing[3][1] = "I couldn't find a speaker with that name, please tell me another name"
+	Outgoing[3][2] = "Please type a speaker name to view his/her talks"
 
 	Outgoing[4][0] = "Here are some talks for this topic"
 	Outgoing[4][1] = "Would you like to chosoe another topcic?"
+	Outgoing[4][2] = "Please reply with a yes or a no"
 
 	Outgoing[5][0] = "Here are some talks for this speaker"
 	Outgoing[5][1] = "Would you like to choose another speaker?"
+	Outgoing[5][2] = "Please reply with a yes or a no"
+
+	Outgoing[7][0] = "What is the name of the talk you want?"
+	Outgoing[7][1] = "I couldn't find this talk, please tell me another one"
+	Outgoing[7][2] = "Please type the name of the talk you want"
+
+	Outgoing[8][0] = "Here is the talk you asked for"
+	Outgoing[8][1] = "Would you like to choose another talk?"
+	Outgoing[8][2] = "Please reply with a yes or a no"
+
+	//Outgoing[8][1] = "Sorry was that a yes or a no"
+
+	//Outgoing[9][0] = "Here is the summary you asked for"
+	//Outgoing[9][1] = "Would you like to choose another talk?"
+	//Outgoing[9][2] = "Please reply with a yes or a no"
+
 }
 
 var Phase = 1
 var s = ""
 var Error = false
 
-var Incoming = [6][2]string{}
-var Outgoing = [6][2]string{}
+var Incoming = [10][5]string{}
+var Outgoing = [10][3]string{}

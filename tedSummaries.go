@@ -14,16 +14,18 @@ type talkdetail struct {
 }
 
 // main function
-func fetchSummary(keywords []string) (talkdetail, error) {
-
-	url, err := checkSummary(keywords, putKeyWords(keywords))
+func fetchSummary(keywords string, keywords1 string) string {
+	keywordsArr := strings.Split(keywords, "+")
+	url, err := checkSummary(keywordsArr, (keywords))
 
 	if err == nil {
 		summary := crawlSummary(url)
 		talkdetail := extractAttr(summary)
-		return talkdetail, nil
+		fmt.Println("Here 24")
+		return talkdetail.summary
 	}
-	return talkdetail{}, err
+	fmt.Println(err)
+	return fetchAltSummary(keywords1)
 }
 
 func extractAttr(strArr []string) talkdetail {
@@ -40,8 +42,6 @@ func extractAttr(strArr []string) talkdetail {
 		}
 		if flag {
 			res.summary += element
-		} else {
-			res.critique += element
 		}
 	}
 	return res
@@ -72,7 +72,7 @@ func checkSummary(keywordsArr []string, keywords string) (string, error) {
 
 }
 func tedSummarycrawler(link string) []string {
-	var arr []string
+	var arr = []string{}
 	//	var x int = 0
 
 	resp, err := http.Get(link)

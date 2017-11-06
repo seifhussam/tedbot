@@ -7,3 +7,10 @@ const (
 	tedinfoTedHistory = "https://www.ted.com/about/our-organization/history-of-ted"
 	tedinfoTedWorks   = "https://www.ted.com/about/our-organization/how-ted-works"
 )
+
+func fetchTedinfo() string {
+	return "<strong> TED : </strong>" + tedinfoTedOrg + "<br>" +
+		"<strong> TED's Mission : </strong>" + tedinfoTedMission + "<br>" +
+		"<a target='_blank' href='" + tedinfoTedHistory + "'> Click here to see Ted's history </a> <br>" +
+		"<a target='_blank' href='" + tedinfoTedWorks + "'> Click here to see How Ted works </a> <br>"
+}

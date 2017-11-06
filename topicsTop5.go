@@ -2,6 +2,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"regexp"
@@ -16,8 +17,11 @@ type talkRes struct {
 }
 
 func fetchtopTalks(topic string) []talkRes {
-	res := topTopicscrawler(topic)
-	//fmt.Println(res)
+	res := topTopicscrawler(TopicsURL1 + topic)
+	fmt.Println(res[0])
+	if strings.Contains(res[0], "Looks like there werent any talks matching your search criteria Try using a more general term or searching with fewer filters") {
+		return []talkRes{}
+	}
 	var talks = []talkRes{}
 	for i := 0; i < len(res)-1; i += 2 {
 		talks = append(talks, talkRes{res[i], res[i+1]})

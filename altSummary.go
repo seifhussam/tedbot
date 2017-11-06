@@ -2,6 +2,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"regexp"
@@ -16,6 +17,9 @@ func fetchAltSummary(keyword string) string {
 	x1 := strings.Replace(keyword, "+", "_", -1)
 	x2 := crawlALTSummaryLink(x, x1)
 	summ := crawlAltSummary(x2)
+	fmt.Println(x)
+	fmt.Println("X2 : " + x2)
+	fmt.Println("summ : " + summ)
 	return summ
 
 }
@@ -51,7 +55,7 @@ func crawlAltSummary(link string) string {
 			}
 		}
 	}
-	return res
+	return "Summary not availble"
 }
 
 func crawlALTSummaryLink(link string, name string) string {
@@ -72,8 +76,10 @@ func crawlALTSummaryLink(link string, name string) string {
 				sth2 := tokenized.Token()
 				if sth2.Data == "a" {
 					for _, a := range sth2.Attr {
+						// fmt.Println(a.Val)
 						if strings.Contains(a.Val, strings.ToLower(name)) && strings.HasPrefix(a.Val, "/talks") {
 							res = "http://www.ted.com/" + a.Val
+
 						}
 					}
 				}

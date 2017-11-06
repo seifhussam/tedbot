@@ -10,7 +10,7 @@ const (
 	//HelpString ..
 	HelpString = "how can I help you ?"
 	// Youtubelink ..done
-	Youtubelink = "https://www.youtube.com/"
+	Youtubelink = "https://www.youtube.com/watch?v="
 	//TedSummaries ..pending
 	TedSummaries = "https://tedsummaries.com/?s="
 	//TopicsURL ..

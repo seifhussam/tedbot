@@ -9,12 +9,11 @@ import (
 	youtube "google.golang.org/api/youtube/v3"
 )
 
-func fetchVideoLink(talk string) string {
-	var (
-		query      = flag.String("query", talk, "Search term")
-		maxResults = flag.Int64("max-results", 1, "Max YouTube results")
-	)
+var query = flag.String("query", "joe", "Search term")
+var maxResults = flag.Int64("max-results", 1, "Max YouTube results")
 
+func fetchVideoLink(talk string) string {
+	*query = talk
 	const developerKey = "AIzaSyAnHiHotrP8zetr9MYdJwNxAcaXBdOYrL4"
 	flag.Parse()
 
@@ -56,5 +55,6 @@ func fetchVideoLink(talk string) string {
 	for id := range videos {
 		thisid = id
 	}
+
 	return Youtubelink + thisid
 }
