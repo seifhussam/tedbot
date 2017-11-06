@@ -2,7 +2,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"regexp"
@@ -17,9 +16,6 @@ func fetchAltSummary(keyword string) string {
 	x1 := strings.Replace(keyword, "+", "_", -1)
 	x2 := crawlALTSummaryLink(x, x1)
 	summ := crawlAltSummary(x2)
-	fmt.Println(x)
-	fmt.Println("X2 : " + x2)
-	fmt.Println("summ : " + summ)
 	return summ
 
 }

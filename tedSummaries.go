@@ -17,11 +17,10 @@ type talkdetail struct {
 func fetchSummary(keywords string, keywords1 string) string {
 	keywordsArr := strings.Split(keywords, "+")
 	url, err := checkSummary(keywordsArr, (keywords))
-
+	fmt.Println(url)
 	if err == nil {
 		summary := crawlSummary(url)
 		talkdetail := extractAttr(summary)
-		fmt.Println("Here 24")
 		return talkdetail.summary
 	}
 	fmt.Println(err)
@@ -60,7 +59,8 @@ func putKeyWords(str []string) string {
 }
 func checkSummary(keywordsArr []string, keywords string) (string, error) {
 
-	var arr = tedSummarycrawler(TedSummaries + keywords)
+	var arr = tedSummarycrawler(TedSummaries + strings.Split(keywords, "+")[0])
+	fmt.Println("Link Search : " + TedSummaries + keywords)
 	if len(arr) > 9 {
 		if strings.Contains(arr[9], strings.ToLower(keywordsArr[0])) || strings.Contains(arr[9], strings.ToLower(keywordsArr[1])) {
 			return arr[9], nil

@@ -168,13 +168,13 @@ func Init() {
 	Incoming[8][1] = "no"
 
 	//---------------------------------------------------------------------------------------------------
-	Outgoing[1][0] = "Would you like to search for a Topic, Speaker, Info or a Talk?"
-	Outgoing[1][1] = "I don't understand, please choose Topic, Speaker, Info or a Talk?"
+	Outgoing[1][0] = "Would you like to search for a Topic, a Speaker, Info or a Talk?"
+	Outgoing[1][1] = "I don't understand, please choose Topic, Speaker, Info or Talk?"
 	Outgoing[1][2] = "Please type Topic, Speaker, Info or a Talk"
 
 	Outgoing[2][0] = "What topic should I get for you?"
 	Outgoing[2][1] = "I couldn't find this topic, please tell me another one"
-	Outgoing[2][2] = "Please type the name of the Topic you wish view"
+	Outgoing[2][2] = "Please type the name of the Topic you wish to view"
 
 	Outgoing[3][0] = "Please tell me the name of the speaker?"
 	Outgoing[3][1] = "I couldn't find a speaker with that name, please tell me another name"
