@@ -31,7 +31,7 @@ func Check(M string) string {
 	M = strings.Trim(M, " ")
 
 	if strings.EqualFold(M, "help") {
-		return (Outgoing[Phase][2])
+		return (Outgoing[Phase][2] + "<br>")
 	}
 
 	//M = M[0 : len(M)-2]
