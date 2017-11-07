@@ -15,18 +15,20 @@ func handleName(session chatbot.Session, message string) (string, error) {
 		return "", fmt.Errorf(SamenameString)
 	}
 	session["name"] = message
+	session["phase"] = 1
 	fmt.Println(session)
 	return fmt.Sprintf(Outgoing[1][0]), nil
 }
 
 // handle RegularMessages
 func handleChat(session chatbot.Session, message string) string {
-	R := "" + Check(message) + Respond()
+	Phase = session["phase"].(int)
+	R := "" + Check(message, session) + Respond()
 	return R
 
 }
 
-func Check(M string) string {
+func Check(M string, session chatbot.Session) string {
 	M = strings.ToLower(M)
 	M = strings.Trim(M, " ")
 
@@ -46,16 +48,20 @@ func Check(M string) string {
 			case 1:
 				if a == 0 {
 					Phase = 2
+					session["phase"] = 2
 				}
 				if a == 1 {
 					Phase = 3
+					session["phase"] = 3
 				}
 				if a == 2 {
 					Phase = 1
+					session["phase"] = 1
 					return fetchTedinfo()
 				}
 				if a == 3 {
 					Phase = 7
+					session["phase"] = 7
 				}
 				break
 			case 2:
@@ -68,9 +74,11 @@ func Check(M string) string {
 				if test == "" {
 					Error = true
 					Phase = 2
+					session["phase"] = 2
 					return ""
 				}
 				Phase = 1
+				session["phase"] = 1
 				Error = false
 				return F
 				break
@@ -84,30 +92,37 @@ func Check(M string) string {
 				if test == "" {
 					Error = true
 					Phase = 3
+					session["phase"] = 3
 					return ""
 				}
 				Phase = 1
+				session["phase"] = 1
 				Error = false
 				return F
 				break
 			case 4:
 				if a == 0 {
 					Phase = 2
+					session["phase"] = 2
 				}
 				if a == 1 {
 					Phase = 1
+					session["phase"] = 1
 				}
 				break
 			case 5:
 				if a == 0 {
 					Phase = 3
+					session["phase"] = 3
 				}
 				if a == 1 {
 					Phase = 1
+					session["phase"] = 1
 				}
 				break
 			case 6:
 				Phase = 1
+				session["phase"] = 1
 				Error = false
 				break
 			case 7:
@@ -120,18 +135,22 @@ func Check(M string) string {
 				if test == "" {
 					Error = true
 					Phase = 7
+					session["phase"] = 7
 					return ""
 				}
 				Error = false
 				Phase = 1
+				session["phase"] = 1
 				return F
 				break
 			case 8:
 				if a == 0 {
 					Phase = 7
+					session["phase"] = 7
 				}
 				if a == 1 {
 					Phase = 1
+					session["phase"] = 1
 				}
 				break
 			}
