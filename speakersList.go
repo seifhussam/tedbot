@@ -16,10 +16,11 @@ type speaker struct {
 	talks     []talk
 }
 type talk struct {
-	talkName    string
-	talkInfo    string
-	talkKeyWord string
-	nameKeyword string
+	talkName       string
+	talkInfo       string
+	talkKeyWord    string
+	nameKeyword    string
+	speakerKeyword string
 }
 
 var speakerNewName string
@@ -38,10 +39,16 @@ func fetchSpeakerTalkList() {
 				sp.firstName = strings.ToLower(element1)
 				f = !f
 			} else {
-				sp.lastName += strings.ToLower(strings.Replace(element1, "!", "", -1)) + " "
+				if strings.ToLower(strings.Replace(element1, "!", "", -1)) != "" {
+					sp.lastName += strings.ToLower(strings.Replace(element1, "!", "", -1)) + " "
+				}
 
 			}
 		}
+		if len(sp.lastName) > 0 {
+			sp.lastName = sp.lastName[:len(sp.lastName)-1]
+		}
+
 		var talks = []talk{}
 		talksarr := strings.Split(element, ",")
 		index := 0
@@ -49,7 +56,7 @@ func fetchSpeakerTalkList() {
 			if index < len(talksarr)-1 {
 				var t = talk{}
 				t.talkName, t.talkInfo = decodeTalk(e)
-				t.nameKeyword, t.talkKeyWord = generateTalkKeyWord(sp.firstName, t.talkName)
+				t.nameKeyword, t.talkKeyWord, t.speakerKeyword = generateTalkKeyWord(sp.firstName, sp.lastName, t.talkName)
 				talks = append(talks, t)
 			}
 			index++
@@ -59,12 +66,17 @@ func fetchSpeakerTalkList() {
 	}
 }
 
-func generateTalkKeyWord(name string, talkstr string) (string, string) {
+func generateTalkKeyWord(name string, lastname string, talkstr string) (string, string, string) {
 	var res = name + "+"
+	temp := strings.Split(lastname, " ")
+	for _, e := range temp {
+		res += e + "+"
+	}
+	var res3 = res
 	var res1 = ""
 	talkstrArr := strings.Split(talkstr, " ")
 	for _, e := range talkstrArr {
-		reg, err := regexp.Compile("[^a-zA-Z0-9]+")
+		reg, err := regexp.Compile("[^a-zA-Z0-9',-]+")
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -80,7 +92,7 @@ func generateTalkKeyWord(name string, talkstr string) (string, string) {
 	// if len(res1) == 0 {
 	// 	//	res1 = " "
 	// }
-	return res1[:(len(res1) - 1)], res[:(len(res) - 1)]
+	return res1[:(len(res1) - 1)], res[:(len(res) - 1)], res3[:(len(res3) - 1)]
 }
 
 func decodeTalk(talks string) (string, string) {

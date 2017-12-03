@@ -14,17 +14,17 @@ type talkdetail struct {
 }
 
 // main function
-func fetchSummary(keywords string, keywords1 string) string {
+func fetchSummary(keywords string, keywords1 string, keywords2 string) string {
 	keywordsArr := strings.Split(keywords, "+")
+	// fmt.Println(keywords)
 	url, err := checkSummary(keywordsArr, (keywords))
-	fmt.Println(url)
 	if err == nil {
 		summary := crawlSummary(url)
 		talkdetail := extractAttr(summary)
 		return talkdetail.summary
 	}
-	fmt.Println(err)
-	return fetchAltSummary(keywords1)
+	// fmt.Println(err)
+	return strings.Replace(strings.Replace(fetchAltSummary(keywords, keywords1, keywords2), "\"", "", -1), "\\", "", -1)
 }
 
 func extractAttr(strArr []string) talkdetail {
@@ -58,17 +58,18 @@ func putKeyWords(str []string) string {
 	return res
 }
 func checkSummary(keywordsArr []string, keywords string) (string, error) {
+	var arr = tedSummarycrawler(TedSummaries + keywords)
+	// fmt.Println(keywordsArr[0])
+	// fmt.Println(keywordsArr[1])
 
-	var arr = tedSummarycrawler(TedSummaries + strings.Split(keywords, "+")[0])
-	fmt.Println("Link Search : " + TedSummaries + keywords)
-	if len(arr) > 9 {
-		if strings.Contains(arr[9], strings.ToLower(keywordsArr[0])) || strings.Contains(arr[9], strings.ToLower(keywordsArr[1])) {
-			return arr[9], nil
+	for _, e := range arr {
+		if !strings.Contains(e, "?s=") && strings.Contains(e, strings.ToLower(keywordsArr[0])) && strings.Contains(e, strings.ToLower(keywordsArr[1])) && strings.Contains(e, strings.ToLower(keywordsArr[2])) {
+			fmt.Println(e)
+			fmt.Println("tedSummaries")
+			return e, nil
 		}
-		return "", fmt.Errorf("%s", SummaryError)
-
 	}
-	return "", fmt.Errorf("%s", outOfBound)
+	return "", fmt.Errorf("%s", SummaryError)
 
 }
 func tedSummarycrawler(link string) []string {
