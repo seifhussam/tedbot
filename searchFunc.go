@@ -35,7 +35,7 @@ func FindTalk(min string) string {
 		}
 	}
 	if x > 1 {
-		res = "I found a couple of talks thhat matches <br>" + res
+		res = "I found a couple of talks that matches <br>" + res
 	}
 	return res
 }
@@ -57,7 +57,7 @@ func searchSpeakername(min string) string {
 		}
 	}
 	if x > 1 {
-		res = "I found a couple of talks thhat matches <br>" + res
+		res = "I found a couple of talks that matches <br>" + res
 	}
 	return res
 }
