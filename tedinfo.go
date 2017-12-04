@@ -11,6 +11,6 @@ const (
 func fetchTedinfo() string {
 	return "TED : " + tedinfoTedOrg + "<br>" +
 		"TED's Mission : " + tedinfoTedMission + "<br>" +
-		"Here is a link to Ted's history " + tedinfoTedHistory + "<br>" +
-		"So, how does Ted works? visit the following link : " + tedinfoTedWorks + "<br>"
+		"Here is a link to Ted's history : " + tedinfoTedHistory + "<br>" +
+		"So, how does Ted work? visit the following link : " + tedinfoTedWorks + "<br>"
 }
