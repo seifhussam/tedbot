@@ -9,8 +9,8 @@ const (
 )
 
 func fetchTedinfo() string {
-	return "<strong> TED : </strong>" + tedinfoTedOrg + "<br>" +
-		"<strong> TED's Mission : </strong>" + tedinfoTedMission + "<br>" +
-		"<a target='_blank' href='" + tedinfoTedHistory + "'> Click here to see Ted's history </a> <br>" +
-		"<a target='_blank' href='" + tedinfoTedWorks + "'> Click here to see How Ted works </a> <br>"
+	return "TED : " + tedinfoTedOrg + "<br>" +
+		"TED's Mission : " + tedinfoTedMission + "<br>" +
+		"Here is a link to Ted's history " + tedinfoTedHistory + "<br>" +
+		"So, how does Ted works? visit the following link : " + tedinfoTedWorks + "<br>"
 }

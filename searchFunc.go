@@ -13,9 +13,9 @@ func FindTopic(min string) string {
 	arr := fetchtopTalks(min)
 	res := ""
 	for _, e := range arr {
-		res = res + "<strong>" + e.speaker + "</strong> : " + e.talk + "<br>"
+		res = res + e.speaker + " : " + e.talk + "<br>"
 	}
-	return res
+	return "Here are the top talks in this topic. <br>" + res
 }
 func FindTalk(min string) string {
 	res := ""
