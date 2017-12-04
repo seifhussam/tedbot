@@ -12,7 +12,7 @@ import (
 // handle Name
 func handleName(session chatbot.Session, message string) (string, error) {
 	if strings.EqualFold(message, "tedbot") {
-		return "", fmt.Errorf(SamenameString)
+		return fmt.Sprintf(SamenameString), nil
 	}
 	session["name"] = message
 	session["phase"] = 1
