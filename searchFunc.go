@@ -23,9 +23,9 @@ func FindTalk(min string) string {
 	for _, e := range speakersTalksList {
 		for _, e1 := range e.talks {
 			if strings.Contains(strings.ToLower(e1.talkName), strings.ToLower(min)) || strings.Contains(strings.ToLower(min), strings.ToLower(e1.talkName)) {
-				res = res + "<strong>" + strings.Title(e.firstName) + " " + strings.Title(e.lastName) + " : </strong>" + e1.talkName + "<br>"
-				res = res + "<strong> Talk videoURL : </strong> <a target='_blank' href='" + fetchVideoLink(e1.talkName) + "'>Click here to watch the talk</a><br>"
-				res = res + "<strong> Talk Summary : </strong> " + fetchSummary(e1.talkKeyWord, e1.nameKeyword, e1.speakerKeyword) /* fetchAltSummary(e1.nameKeyword)*/ + "<br>"
+				res = res + strings.Title(e.firstName) + " " + strings.Title(e.lastName) + " : " + e1.talkName
+				res = res + "Video Link : " + fetchVideoLink(e1.talkName)
+				res = res + "Talk Summary : " + fetchSummary(e1.talkKeyWord, e1.nameKeyword, e1.speakerKeyword) /* fetchAltSummary(e1.nameKeyword)*/ + "<br>"
 				x++
 				break
 			}
@@ -33,6 +33,9 @@ func FindTalk(min string) string {
 		if x > 5 {
 			break
 		}
+	}
+	if x > 1 {
+		res = "I found a couple of matches <br>" + res
 	}
 	return res
 }
@@ -43,15 +46,18 @@ func searchSpeakername(min string) string {
 	for k, e := range speakersTalksList {
 		if strings.Contains(strings.ToLower(min), strings.ToLower(k)) || strings.Contains(strings.ToLower(k), strings.ToLower(min)) {
 			for _, e1 := range e.talks {
-				res = res + "<strong>" + strings.Title(e.firstName) + " " + strings.Title(e.lastName) + " : </strong>" + e1.talkName + "<br>"
-				res = res + "<strong> Talk videoURL : </strong> <a target='_blank' href='" + fetchVideoLink(e1.talkName) + "'>Click here to watch the talk</a><br>"
-				res = res + "<strong> Talk Summary : </strong> " + fetchSummary(e1.talkKeyWord, e1.nameKeyword, e1.speakerKeyword) /* fetchAltSummary(e1.nameKeyword)*/ + "<br>"
+				res = res + strings.Title(e.firstName) + " " + strings.Title(e.lastName) + " : " + e1.talkName
+				res = res + "Video Link : " + fetchVideoLink(e1.talkName)
+				res = res + "Talk Summary : " + fetchSummary(e1.talkKeyWord, e1.nameKeyword, e1.speakerKeyword) /* fetchAltSummary(e1.nameKeyword)*/ + "<br>"
 				x++
 			}
 			if x > 5 {
 				break
 			}
 		}
+	}
+	if x > 1 {
+		res = "I found a couple of matches <br>" + res
 	}
 	return res
 }
