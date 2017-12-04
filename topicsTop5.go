@@ -2,6 +2,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"regexp"
@@ -16,7 +17,7 @@ type talkRes struct {
 }
 
 func fetchtopTalks(topic string) []talkRes {
-	res := topTopicscrawler(topic)
+	res := topTopicscrawler(strings.ToLower(topic))
 	if len(res) == 0 || strings.Contains(res[0], "Looks like there werent any talks matching your search criteria Try using a more general term or searching with fewer filters") {
 		return []talkRes{}
 	}
@@ -46,7 +47,7 @@ func topTopicscrawler(link string) []string {
 			case sth == html.TextToken:
 				sth2 := tokenized.Token()
 				if !strings.Contains(sth2.Data, "Under 6 minutes") && sth2.Data != "\n" && sth2.Data != " " && sth2.Data != "\t" && sth2.Data != "" {
-					// fmt.Println(sth2.Data)
+					fmt.Println(sth2.Data)
 					if strings.Contains(sth2.Data, "Showing all") {
 						x = 41
 					}
